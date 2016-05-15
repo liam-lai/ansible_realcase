@@ -32,7 +32,7 @@
       notes: Created By Ansible
 
    tasks:
-    - name: Deploy guest from template
+    - name: Deploy guest from scratch
       vsphere_guest:
          
          vcenter_hostname: '{{vcenter_hostname}}'
