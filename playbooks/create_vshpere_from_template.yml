@@ -7,11 +7,8 @@
    gather_facts: False
 
    vars:
-      vcenter_hostname: vvcprdappw003
-      username: 'OCAUS01\CP553436'
-      password: "Puppet$12"
       
-      quest: '{{quest}}'
+      guest: LiamTestFromTemplate
       osid:  rhel6_64Guest
       num_cpus: 4
       memory_mb: 4096
@@ -31,41 +28,18 @@
          vcenter_hostname: '{{vcenter_hostname}}'
          username: '{{username}}'
          password: '{{password}}'
-         guest: '{{item}}'  #guest name
+         guest: '{{guest}}'  #guest name
          from_template: yes
          template_src: LiamtestVM
-         state: "powered_on"  
+         #state: "powered_on"  
          cluster: CHOC
 
-         vm_extra_config:
-            vcpu.hotadd: yes
-            mem.hotadd:  yes
-            notes: Create By Ansible
-            folder: 'Linux'   #CHOC/Linux
-         vm_disk:
-            disk1:
-               size_gb: '{{disk1_size}}'
-               type: thin  # Thin Provision
-               datastore: '{{datastore}}'
-               folder: '{{quest}}'
-         vm_nic:
-            nic1:
-               type: vmxnet3
-               network: '{{nic1}}'
-               network_type: standard
-            nic2:
-               type: vmxnet3
-               network: '{{nic2}}'
-               network_type: standard
-         vm_hardware:
-            memory_mb: '{{memory_mb}}'
-            num_cpus: '{{num_cpus}}'
-            osid: '{{osid}}'
-            scsi: "paravirtual"
          esxi:
             datacenter: '{{datacenter}}'
             hostname: '{{hostname}}'
-      with_items: '{{serverlist}}'
+         validate_certs: no #ssl validate
+
+         #with_items: '{{serverlist}}'
          #vm_cdrom:
          #  type: "iso"
          #  iso_path: "DatastoreName/cd-image.iso"
