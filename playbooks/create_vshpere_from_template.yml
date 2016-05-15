@@ -6,8 +6,16 @@
    connection: local
    gather_facts: False
 
+   vars_prompt:
+    - name: "password"
+      prompt: "Enter vcenter password"
+      private: no
+      default: "password"
+
    vars:
-      
+      vcenter_hostname: vvcprdappw003
+      username: 'OCAUS01\CP553436'
+
       guest: LiamTestFromTemplate
       osid:  rhel6_64Guest
       num_cpus: 4

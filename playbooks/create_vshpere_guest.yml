@@ -10,6 +10,12 @@
    connection: local
    gather_facts: False
 
+   vars_prompt:
+    - name: "password"
+      prompt: "Enter vcenter password"
+      private: no
+      default: "password"
+   
    vars:
       guest: LiamTest
       osid:  rhel6_64Guest
