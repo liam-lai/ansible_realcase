@@ -1,0 +1,74 @@
+# Create a new VM on an ESX server
+# Returns changed = False when the VM already exists
+# Returns changed = True and a adds ansible_facts from the new VM
+# State will set the power status of a guest upon creation. Use powered_on to create and boot.
+# Options ['state', 'vm_extra_config', 'vm_disk', 'vm_nic', 'vm_hardware', 'esxi'] are required together
+# Note: vm_floppy support added in 2.0
+---
+-  name: Create VMware guest
+   hosts: localhost
+   connection: local
+   gather_facts: False
+
+   vars:
+      vcenter_hostname: vvcprdappw003
+      username: 'OCAUS01\CP553436'
+      password: "Puppet$12"
+      
+      quest: '{{quest}}'
+      osid:  rhel6_64Guest
+      num_cpus: 4
+      memory_mb: 4096
+      nic1: Vlan984-203.13.128.64/27-Srvc-RPxy-IZ-EF
+      nic2: Vlan152-161.43.32.0/24-vmnetwork
+      
+      datacenter: CHOC
+      datastore: f2_v031_eca04_02
+      disk1_size: 10
+      hostname: infprdvire082.optus.com.au #would migrate to suitable host automatically after poweron
+
+      notes: Created By Ansible
+
+   tasks:
+    - name: Deploy guest from template
+      vsphere_guest:
+         vcenter_hostname: '{{vcenter_hostname}}'
+         username: '{{username}}'
+         password: '{{password}}'
+         guest: '{{item}}'  #guest name
+         state: "powered_on"  
+         vm_extra_config:
+            vcpu.hotadd: yes
+            mem.hotadd:  yes
+            notes: Create By Ansible
+            folder: 'Linux'   #CHOC/Linux
+         vm_disk:
+            disk1:
+               size_gb: '{{disk1_size}}'
+               type: thin  # Thin Provision
+               datastore: '{{datastore}}'
+               folder: '{{quest}}'
+         vm_nic:
+            nic1:
+               type: vmxnet3
+               network: '{{nic1}}'
+               network_type: standard
+            nic2:
+               type: vmxnet3
+               network: '{{nic2}}'
+               network_type: standard
+         vm_hardware:
+            memory_mb: '{{memory_mb}}'
+            num_cpus: '{{num_cpus}}'
+            osid: '{{osid}}'
+            scsi: "paravirtual"
+         esxi:
+            datacenter: '{{datacenter}}'
+            hostname: '{{hostname}}'
+      with_items: '{{serverlist}}'
+         #vm_cdrom:
+         #  type: "iso"
+         #  iso_path: "DatastoreName/cd-image.iso"
+         #vm_floppy:
+         #  type: "image"
+         #  image_path: "DatastoreName/floppy-image.flp"
