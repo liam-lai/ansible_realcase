@@ -1,11 +1,7 @@
-# Create a new VM on an ESX server
-# Returns changed = False when the VM already exists
-# Returns changed = True and a adds ansible_facts from the new VM
-# State will set the power status of a guest upon creation. Use powered_on to create and boot.
-# Options ['state', 'vm_extra_config', 'vm_disk', 'vm_nic', 'vm_hardware', 'esxi'] are required together
-# Note: vm_floppy support added in 2.0
+# Deploy a guest from a template
+# # No reconfiguration of the destination guest is done at this stage, a reconfigure would be needed to adjust memory/cpu etc..
 ---
--  name: Create VMware guest
+-  name: Create VMware guest from Template
    hosts: localhost
    connection: local
    gather_facts: False
@@ -15,7 +11,7 @@
       username: 'OCAUS01\CP553436'
       password: "Puppet$12"
       
-      guest: LiamTest
+      quest: '{{quest}}'
       osid:  rhel6_64Guest
       num_cpus: 4
       memory_mb: 4096
@@ -32,12 +28,15 @@
    tasks:
     - name: Deploy guest from template
       vsphere_guest:
-         
          vcenter_hostname: '{{vcenter_hostname}}'
          username: '{{username}}'
          password: '{{password}}'
-         guest: '{{guest}}'  #guest name
-         state: "powered_off"  
+         guest: '{{item}}'  #guest name
+         from_template: yes
+         template_src: LiamtestVM
+         state: "powered_on"  
+         cluster: CHOC
+
          vm_extra_config:
             vcpu.hotadd: yes
             mem.hotadd:  yes
@@ -48,7 +47,7 @@
                size_gb: '{{disk1_size}}'
                type: thin  # Thin Provision
                datastore: '{{datastore}}'
-               folder: '{{guest}}'
+               folder: '{{quest}}'
          vm_nic:
             nic1:
                type: vmxnet3
@@ -66,7 +65,6 @@
          esxi:
             datacenter: '{{datacenter}}'
             hostname: '{{hostname}}'
-         validate_certs: no
       with_items: '{{serverlist}}'
          #vm_cdrom:
          #  type: "iso"
