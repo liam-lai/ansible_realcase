@@ -66,7 +66,7 @@
          esxi:
             datacenter: '{{datacenter}}'
             hostname: '{{hostname}}'
-         validate_certs: no
+         validate_certs: no #ssl validate
       with_items: '{{serverlist}}'
          #vm_cdrom:
          #  type: "iso"
