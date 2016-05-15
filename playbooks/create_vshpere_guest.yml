@@ -13,15 +13,15 @@
    vars:
       vcenter_hostname: vvcprdappw003
       username: 'OCAUS01\CP553436'
+
       password: "Puppet$12"
-      
-      quest: '{{quest}}'
-      osid:  rhel6_64Guest
+
+      guest: "LiamTest003"
+      osid: "rhel6_64Guest"
       num_cpus: 4
       memory_mb: 4096
       nic1: Vlan984-203.13.128.64/27-Srvc-RPxy-IZ-EF
       nic2: Vlan152-161.43.32.0/24-vmnetwork
-      
       datacenter: CHOC
       datastore: f2_v031_eca04_02
       disk1_size: 10
@@ -35,7 +35,7 @@
          vcenter_hostname: '{{vcenter_hostname}}'
          username: '{{username}}'
          password: '{{password}}'
-         guest: '{{item}}'  #guest name
+         guest: '{{guest}}'  #guest name
          state: "powered_on"  
          vm_extra_config:
             vcpu.hotadd: yes
@@ -47,7 +47,7 @@
                size_gb: '{{disk1_size}}'
                type: thin  # Thin Provision
                datastore: '{{datastore}}'
-               folder: '{{quest}}'
+               folder: '{{guest}}'
          vm_nic:
             nic1:
                type: vmxnet3
@@ -65,7 +65,7 @@
          esxi:
             datacenter: '{{datacenter}}'
             hostname: '{{hostname}}'
-      with_items: '{{serverlist}}'
+         #with_items: '{{serverlist}}'
          #vm_cdrom:
          #  type: "iso"
          #  iso_path: "DatastoreName/cd-image.iso"
